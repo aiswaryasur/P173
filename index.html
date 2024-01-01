@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Menu Card</title>
+  <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+
+  <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+  <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
+  <script src="https://raw.githack.com/fcor/arjs-gestures/master/dist/gestures.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-firestore.js"></script>
+  <script src="./js/addMarker.js"></script>
+  <script>
+    // Import the functions you need from the SDKs you need
+      import { initializeApp } from "firebase/app";
+      // TODO: Add SDKs for Firebase products that you want to use
+      // https://firebase.google.com/docs/web/setup#available-libraries
+
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyDCWvo4ZrDVhbB2t91-Wva3C0vdlWKtiHE",
+        authDomain: "ar-toy-store-8212a.firebaseapp.com",
+        projectId: "ar-toy-store-8212a",
+        storageBucket: "ar-toy-store-8212a.appspot.com",
+        messagingSenderId: "373929190695",
+        appId: "1:373929190695:web:c5d42be281135894a33502"
+      };
+
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      firebase.analytics();
+  </script>
+
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" />
+
+  <!-- Local StyleSheet -->
+ <link href="./style.css" rel="stylesheet"/>
+  
+  <!--Marker Handler Src-->
+  <script src="./js/button.js"></script>
+  <script src="./js/markerHandler.js"></script>
+ 
+
+</head>
+
+<body style="margin : 0px; overflow: hidden;">
+
+  <a-scene 
+    embedded vr-mode-ui="enabled: false"     
+    arjs="sourceType: webcam; sourceWidth:1280; sourceHeight:960; displayWidth: 1280; displayHeight: 960;debugUIEnabled: false;"
+    gesture-detector
+    create-buttons
+    >
+
+    <!-- Camera -->
+    <a-entity camera></a-entity>
+
+    <a-assets >
+      <a-asset-item id="crane-model" src="./assets/red_crane/scene.gltf">
+      </a-asset-item>
+    </a-assets>
+
+    <a-marker id="crane-marker" type="pattern" url="./assets/toy-markers/pattern-crane.patt" marker-handler cursor="rayOrigin: mouse">
+      <a-entity id="crane-3D-model" position="-2 -2 0" rotation="-90 0 0"  gltf-model="#crane-model" scale="7 7 7" gesture-handler >
+
+      </a-entity>
+
+      <a-plane position="0 0 0" width="3" height="2" rotation="-90 0 0">
+        <a-plane position="0 0.89 0.02" width="3" height="0.3" rotation="0 0 0" color="#FF567D">
+          <a-entity position="0 0 0.1" rotation="0 0 0" text="font:monoid; value: HYDRAULIC CRANE; color:black; width:1.8; height:1; align:center">
+            
+          </a-entity>
+        </a-plane>
+        <a-entity position="0 0 0.1" rotation="0 0 0" text="color:black; align:center; width:2; font:monoid; value:
+        \n \n PULL BACK AND GO: Friction powered crane truck toy, \n 360-degree rotating Left and right,\n machine can pull up & down, swing left & right. \n High Quality Material: FunBlast crane toy \n is made of 100% high-quality abs \n plastics and metal shovel which is durable, \n light and Non-Toxic with strong crash resistance 
+        \n \n
+        AGE:8-10yrs">
+        
+
+        </a-entity>
+
+      </a-plane>
+    </a-marker>
+    <!-- Order Summary Boilerplate -->
+  <div class="container">
+    <div id="modal-div" class="modal" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Order Summary</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closeModal()">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="table-responsive">
+              <table class="table table-condensed">
+                <thead>
+                  <tr>
+                    <td><strong>Item</strong></td>
+                    <td class="text-center"><strong>Price</strong></td>
+                    <td class="text-center"><strong>Quantity</strong></td>
+                    <td class="text-right"><strong>Total</strong></td>
+                  </tr>
+                </thead>
+                <tbody id="bill-table-body">
+                  <!-- foreach ($order->lineItems as $line)  -->
+
+                  <!-- Your Order Summary UI will comes here                 
+                    
+                  -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button id="pay-button" type="button" class="btn btn-primary">
+              Pay Now
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+    
+    
+  </a-scene>
+
+  <!-- Button Main Div -->
+  <div id="button-div"></div>
+
+  
+  <!-- Boilerplate for Ratings Modal -->
+  <div class="container">
+    <div id="rating-modal-div" class="rating-modal" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Rate Dish</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closeRatingModal()">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="table-responsive">
+              <!--Text Field Input-->
+              <textarea class="form-control" id="feedback-input" rows="3"></textarea>
+
+              <!--Stars Input-->
+              <input id="rating-input" name="rating-input" class="rating rating-loading" data-min="0" data-max="5"
+                data-step="0.1" value="0" />
+
+            </div>
+          </div>
+          <div class="modal-footer">
+            <!--Submit Button-->
+            <button id="save-rating-button" type="button" class="btn btn-primary">
+              Submit
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function closeModal() {
+      document.getElementById("modal-div").style.display = "none";
+    }
+  </script>
+
+  <script>
+    function closeRatingModal() {
+      document.getElementById("rating-modal-div").style.display = "none";
+    }
+  </script>
+ 
+</body>
+
+</html>
